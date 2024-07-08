@@ -1,7 +1,7 @@
 from functools import wraps
 from flask import abort, request
 from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
-from aldo.models import User
+from aldo.models.user_accounts import User
 
 def admin_required(f):
     @wraps(f)

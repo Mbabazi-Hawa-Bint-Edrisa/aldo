@@ -1,7 +1,7 @@
      
 from flask import Blueprint, jsonify, request, abort
 from aldo.extensions import db, bcrypt
-from aldo.models import User
+from aldo.models.user_accounts import User
 from aldo.decorators import admin_required
 from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token, create_refresh_token
 from werkzeug.security import generate_password_hash, check_password_hash

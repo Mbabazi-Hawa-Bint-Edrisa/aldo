@@ -1,3 +1,4 @@
+
 from flask import Blueprint, request, jsonify
 from datetime import datetime
 from aldo.extensions import db
@@ -24,14 +25,14 @@ def create_payment():
 
         # Verify booking existence and ownership
         current_user_id = get_jwt_identity()
-        booking = Booking.query.filter_by(id=booking_id, user_id=current_user_id).first()
+        booking = Booking.query.filter_by(booking_id=booking_id, user_id=current_user_id).first()
         
         if not booking:
             return jsonify({"error": "Booking not found or you are not authorized"}), 404
 
         # Create new payment
         new_payment = Payment(
-            booking_id=booking_id,
+            booking_id=booking.booking_id,
             payment_date=datetime.now(),
             amount=amount,
             payment_method=payment_method,
@@ -41,7 +42,7 @@ def create_payment():
         db.session.add(new_payment)
         db.session.commit()
 
-        return jsonify({'message': 'Payment created successfully', 'payment_id': new_payment.id}), 201
+        return jsonify({'message': 'Payment created successfully', 'payment_id': new_payment.payment_id}), 201
 
     except Exception as e:
         db.session.rollback()
@@ -62,7 +63,7 @@ def get_payment(payment_id):
             return jsonify({'error': 'You are not authorized to view this payment'}), 403
 
         payment_data = {
-            'payment_id': payment.id,
+            'payment_id': payment.payment_id,
             'booking_id': payment.booking_id,
             'payment_date': payment.payment_date,
             'amount': payment.amount,
@@ -135,7 +136,7 @@ def delete_payment(payment_id):
 def get_payments_for_booking(booking_id):
     try:
         current_user_id = get_jwt_identity()
-        booking = Booking.query.filter_by(id=booking_id, user_id=current_user_id).first()
+        booking = Booking.query.filter_by(booking_id=booking_id, user_id=current_user_id).first()
         
         if not booking:
             return jsonify({"error": "Booking not found or you are not authorized"}), 404
@@ -144,7 +145,7 @@ def get_payments_for_booking(booking_id):
 
         payments_data = [
             {
-                'payment_id': payment.id,
+                'payment_id': payment.payment_id,
                 'booking_id': payment.booking_id,
                 'payment_date': payment.payment_date,
                 'amount': payment.amount,

@@ -1,10 +1,8 @@
-     
-from flask import Blueprint, jsonify, request, abort
+from flask import Blueprint, jsonify, request
 from aldo.extensions import db, bcrypt
 from aldo.models.user_accounts import User
 from aldo.decorators import admin_required
 from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token, create_refresh_token
-from werkzeug.security import generate_password_hash, check_password_hash
 
 user_bp = Blueprint('user', __name__, url_prefix='/api')
 
@@ -190,3 +188,5 @@ app.register_blueprint(user_bp)
 
 if __name__ == '__main__':
     app.run()
+
+

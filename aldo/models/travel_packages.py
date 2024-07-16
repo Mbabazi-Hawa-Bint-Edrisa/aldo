@@ -1,4 +1,3 @@
-
 from aldo.extensions import db
 import json
 
@@ -8,11 +7,12 @@ class TravelPackage(db.Model):
     package_id = db.Column(db.Integer, primary_key=True)
     package_name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text)
-    destinations = db.Column(db.Text)  # Use Text for JSON strings
-    activities = db.Column(db.Text)  # Use Text for JSON strings
-    inclusions = db.Column(db.Text)  # Use Text for JSON strings
+    destinations = db.Column(db.Text)  
+    activities = db.Column(db.Text)  
+    inclusions = db.Column(db.Text) 
     price = db.Column(db.Float)
-    duration = db.Column(db.Integer)
+    start_date = db.Column(db.Date)  
+    end_date = db.Column(db.Date)  
     availability = db.Column(db.Boolean)
     image_url = db.Column(db.String(200))
 
@@ -42,4 +42,3 @@ class TravelPackage(db.Model):
     @inclusions_list.setter
     def inclusions_list(self, value):
         self.inclusions = json.dumps(value)
-

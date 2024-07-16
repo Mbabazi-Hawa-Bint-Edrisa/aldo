@@ -1,5 +1,5 @@
 class Config:
-    SQLALCHEMY_DATABASE_URI="mysql+pymysql://root:@localhost/aldo"
+    SQLALCHEMY_DATABASE_URI="mysql+pymysql://root:@localhost/aldo_safaris"
     JWT_SECRET_KEY='safaris'
 # import os
 

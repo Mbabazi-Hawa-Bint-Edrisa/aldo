@@ -1,10 +1,10 @@
 from flask import Blueprint, request, jsonify
 from aldo.extensions import db
 from aldo.models.notifications import Notification
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required
 from aldo.decorators import admin_required
 
-notification_bp = Blueprint('notification', __name__, url_prefix='/api/v1/notification')
+notification_bp = Blueprint('notification', __name__, url_prefix='/api/v1/notifications')
 
 @notification_bp.route('/', methods=['POST'])
 @jwt_required()
@@ -12,16 +12,12 @@ notification_bp = Blueprint('notification', __name__, url_prefix='/api/v1/notifi
 def create_notification():
     try:
         data = request.json
-        
         message = data.get('message')
 
         if not message:
             return jsonify({"error": "Message is required"}), 400
 
-        new_notification = Notification(
-            message=message
-        )
-
+        new_notification = Notification(message=message)
         db.session.add(new_notification)
         db.session.commit()
 
@@ -62,7 +58,6 @@ def update_notification(notification_id):
             return jsonify({'error': 'Notification not found'}), 404
 
         data = request.json
-
         if 'message' in data:
             notification.message = data['message']
 

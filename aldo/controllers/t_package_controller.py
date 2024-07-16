@@ -1,9 +1,9 @@
-
 from flask import Blueprint, request, jsonify
 from aldo.extensions import db
 from aldo.models.travel_packages import TravelPackage
 from flask_jwt_extended import jwt_required
 import json
+from datetime import datetime
 
 travel_package_bp = Blueprint('travel_package', __name__, url_prefix='/api/v1/travel_package')
 
@@ -28,13 +28,14 @@ def create_travel_package():
         activities = serialize_to_json(data.get('activities', []))  # Serialize list to JSON
         inclusions = serialize_to_json(data.get('inclusions', []))  # Serialize list to JSON
         price = data.get('price')
-        duration = data.get('duration')
+        start_date = datetime.strptime(data.get('start_date'), '%Y-%m-%d') if data.get('start_date') else None
+        end_date = datetime.strptime(data.get('end_date'), '%Y-%m-%d') if data.get('end_date') else None
         availability = data.get('availability', True)
         image_url = data.get('image_url')
 
         # Basic input validation
-        if not all([package_name, price, duration]):
-            return jsonify({"error": "Package name, price, and duration are required"}), 400
+        if not all([package_name, price, start_date, end_date]):
+            return jsonify({"error": "Package name, price, start date, and end date are required"}), 400
 
         # Create a new travel package
         new_travel_package = TravelPackage(
@@ -44,7 +45,8 @@ def create_travel_package():
             activities=activities,
             inclusions=inclusions,
             price=price,
-            duration=duration,
+            start_date=start_date,
+            end_date=end_date,
             availability=availability,
             image_url=image_url
         )
@@ -79,7 +81,8 @@ def get_travel_package(package_id):
             'activities': deserialize_from_json(travel_package.activities),  # Deserialize JSON to list
             'inclusions': deserialize_from_json(travel_package.inclusions),  # Deserialize JSON to list
             'price': travel_package.price,
-            'duration': travel_package.duration,
+            'start_date': travel_package.start_date.strftime('%Y-%m-%d') if travel_package.start_date else None,
+            'end_date': travel_package.end_date.strftime('%Y-%m-%d') if travel_package.end_date else None,
             'availability': travel_package.availability,
             'image_url': travel_package.image_url
         }
@@ -116,8 +119,10 @@ def update_travel_package(package_id):
             travel_package.inclusions = serialize_to_json(data['inclusions'])  # Serialize list to JSON
         if 'price' in data:
             travel_package.price = data['price']
-        if 'duration' in data:
-            travel_package.duration = data['duration']
+        if 'start_date' in data:
+            travel_package.start_date = datetime.strptime(data['start_date'], '%Y-%m-%d')
+        if 'end_date' in data:
+            travel_package.end_date = datetime.strptime(data['end_date'], '%Y-%m-%d')
         if 'availability' in data:
             travel_package.availability = data['availability']
         if 'image_url' in data:
@@ -171,7 +176,8 @@ def get_all_travel_packages():
                 'activities': deserialize_from_json(travel_package.activities),  # Deserialize JSON to list
                 'inclusions': deserialize_from_json(travel_package.inclusions),  # Deserialize JSON to list
                 'price': travel_package.price,
-                'duration': travel_package.duration,
+                'start_date': travel_package.start_date.strftime('%Y-%m-%d') if travel_package.start_date else None,
+                'end_date': travel_package.end_date.strftime('%Y-%m-%d') if travel_package.end_date else None,
                 'availability': travel_package.availability,
                 'image_url': travel_package.image_url
             } for travel_package in travel_packages

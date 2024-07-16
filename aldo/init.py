@@ -6,10 +6,14 @@ from aldo.controllers.notifications_controller import notification_bp
 from aldo.controllers.t_package_controller import travel_package_bp
 from aldo.controllers.user_accounts_controller import user_bp
 from aldo.controllers.dashboard_controller import admin_bp
+from flask_cors import CORS
+
+
 
 
 def create_app():
     app = Flask(__name__)
+    CORS(app) 
 
     # Load configuration from config.py
     app.config.from_object('config.Config')
@@ -22,11 +26,12 @@ def create_app():
 
     # Register blueprints
     app.register_blueprint(booking_bp, url_prefix='/api/v1/booking')
-    app.register_blueprint(notification_bp, url_prefix='/api/v1/notification')
+    app.register_blueprint(notification_bp, url_prefix='/api/v1/notifications')
     app.register_blueprint(payment_bp, url_prefix='/api/v1/payment')
     app.register_blueprint(travel_package_bp, url_prefix='/api/v1/travel_package')
     app.register_blueprint(user_bp, url_prefix='/api')
     app.register_blueprint(admin_bp, url_prefix='/api/admin') 
+    
  
 
     return app

@@ -1,83 +1,94 @@
 from flask import Blueprint, jsonify
-from aldo.decorators import admin_required  # Assuming you have a custom decorator for admin access
+from aldo.extensions import db
 from aldo.models.user_accounts import User
-from aldo.models.travel_packages import TravelPackage
 from aldo.models.booking import Booking
-from aldo.models.payments import Payment
-from aldo.models.notifications import Notification
+from aldo.models.travel_packages import TravelPackage
+from aldo.models.message import Message
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from aldo.decorators import admin_required
+import json
 
-admin_bp = Blueprint('admin', __name__, url_prefix='/api/admin')
+dashboard_bp = Blueprint('dashboard', __name__, url_prefix='/api/v1/dashboard')
 
-@admin_bp.route('/dashboard', methods=['GET'])
-@admin_required
-def admin_dashboard():
-    try:
-        # Example logic to fetch data for the admin dashboard
-        users_count = User.query.count()
-        travel_packages_count = TravelPackage.query.count()
-        bookings_count = Booking.query.count()
-        payments_count = Payment.query.count()
-        notifications_count = Notification.query.count()
-
-        dashboard_data = {
-            'users_count': users_count,
-            'travel_packages_count': travel_packages_count,
-            'bookings_count': bookings_count,
-            'payments_count': payments_count,
-            'notifications_count': notifications_count
-        }
-
-        return jsonify(dashboard_data), 200
-
-    except Exception as e:
-        return jsonify({'error': 'Internal Server Error: ' + str(e)}), 500
-
-@admin_bp.route('/users', methods=['GET'])
+@dashboard_bp.route('/users', methods=['GET'])
+@jwt_required()
 @admin_required
 def get_all_users():
     try:
         users = User.query.all()
-        users_data = [{'user_id': user.user_id, 'username': user.username, 'email': user.email, 'is_admin': user.is_admin} for user in users]
+        users_data = [
+            {
+                'user_id': user.user_id,
+                'username': user.username,
+                'email': user.email,
+                'contact': user.contact,
+                'is_admin': user.is_admin,
+                'created_at': user.created_at
+            } for user in users
+        ]
         return jsonify(users_data), 200
     except Exception as e:
-        return jsonify({'error': 'Internal Server Error: ' + str(e)}), 500
+        return jsonify({'error': str(e)}), 500
 
-@admin_bp.route('/travel_packages', methods=['GET'])
-@admin_required
-def get_all_travel_packages():
-    try:
-        travel_packages = TravelPackage.query.all()
-        travel_packages_data = [{'id': package.id, 'name': package.name, 'description': package.description} for package in travel_packages]
-        return jsonify(travel_packages_data), 200
-    except Exception as e:
-        return jsonify({'error': 'Internal Server Error: ' + str(e)}), 500
-
-@admin_bp.route('/booking', methods=['GET'])
+@dashboard_bp.route('/bookings', methods=['GET'])
+@jwt_required()
 @admin_required
 def get_all_bookings():
     try:
         bookings = Booking.query.all()
-        bookings_data = [{'booking_id': booking.booking_id, 'user_id': booking.user_id, 'package_id': booking.package_id, 'status': booking.status} for booking in bookings]
+        bookings_data = [
+            {
+                'booking_id': booking.booking_id,
+                'package_id': booking.package_id,
+                'user_id': booking.user_id,
+                'booking_date': booking.booking_date,
+                'status': booking.status
+            } for booking in bookings
+        ]
         return jsonify(bookings_data), 200
     except Exception as e:
-        return jsonify({'error': 'Internal Server Error: ' + str(e)}), 500
+        return jsonify({'error': str(e)}), 500
 
-@admin_bp.route('/payments', methods=['GET'])
+@dashboard_bp.route('/travel-packages', methods=['GET'])
+@jwt_required()
 @admin_required
-def get_all_payments():
+def get_all_travel_packages():
     try:
-        payments = Payment.query.all()
-        payments_data = [{'payment_id': payment.payment_id, 'booking_id': payment.booking_id, 'amount': payment.amount, 'status': payment.status} for payment in payments]
-        return jsonify(payments_data), 200
+        travel_packages = TravelPackage.query.all()
+        travel_packages_data = [
+            {
+                'package_id': travel_package.package_id,
+                'package_name': travel_package.package_name,
+                'description': travel_package.description,
+                'destinations': json.loads(travel_package.destinations),
+                'activities': json.loads(travel_package.activities),
+                'inclusions': json.loads(travel_package.inclusions),
+                'price': travel_package.price,
+                'start_date': travel_package.start_date.strftime('%Y-%m-%d') if travel_package.start_date else None,
+                'end_date': travel_package.end_date.strftime('%Y-%m-%d') if travel_package.end_date else None,
+                'availability': travel_package.availability,
+                'image_url': travel_package.image_url
+            } for travel_package in travel_packages
+        ]
+        return jsonify(travel_packages_data), 200
     except Exception as e:
-        return jsonify({'error': 'Internal Server Error: ' + str(e)}), 500
+        return jsonify({'error': str(e)}), 500
 
-@admin_bp.route('/notifications', methods=['GET'])
+@dashboard_bp.route('/messages', methods=['GET'])
+@jwt_required()
 @admin_required
-def get_all_notifications():
+def get_all_messages():
     try:
-        notifications = Notification.query.all()
-        notifications_data = [{'notification_id': notification.notification_id, 'recipient_id': notification.recipient_id, 'message': notification.message, 'status': notification.status} for notification in notifications]
-        return jsonify(notifications_data), 200
+        messages = Message.query.all()
+        messages_data = [
+            {
+                'id': message.id,
+                'name': message.name,
+                'email': message.email,
+                'message': message.message,
+                'created_at': message.created_at
+            } for message in messages
+        ]
+        return jsonify(messages_data), 200
     except Exception as e:
-        return jsonify({'error': 'Internal Server Error: ' + str(e)}), 500
+        return jsonify({'error': str(e)}), 500

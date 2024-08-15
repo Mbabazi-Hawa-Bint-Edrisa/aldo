@@ -31,7 +31,7 @@ def create_travel_package():
         start_date = datetime.strptime(data.get('start_date'), '%Y-%m-%d') if data.get('start_date') else None
         end_date = datetime.strptime(data.get('end_date'), '%Y-%m-%d') if data.get('end_date') else None
         availability = data.get('availability', True)
-        image_url = data.get('image_url')
+        
 
         # Basic input validation
         if not all([package_name, price, start_date, end_date]):
@@ -48,7 +48,7 @@ def create_travel_package():
             start_date=start_date,
             end_date=end_date,
             availability=availability,
-            image_url=image_url
+            
         )
 
         # Add the new travel package to the database and commit
@@ -84,7 +84,7 @@ def get_travel_package(package_id):
             'start_date': travel_package.start_date.strftime('%Y-%m-%d') if travel_package.start_date else None,
             'end_date': travel_package.end_date.strftime('%Y-%m-%d') if travel_package.end_date else None,
             'availability': travel_package.availability,
-            'image_url': travel_package.image_url
+        
         }
 
         return jsonify(travel_package_data), 200
@@ -125,8 +125,7 @@ def update_travel_package(package_id):
             travel_package.end_date = datetime.strptime(data['end_date'], '%Y-%m-%d')
         if 'availability' in data:
             travel_package.availability = data['availability']
-        if 'image_url' in data:
-            travel_package.image_url = data['image_url']
+        
 
         # Commit changes to the database
         db.session.commit()
@@ -179,7 +178,7 @@ def get_all_travel_packages():
                 'start_date': travel_package.start_date.strftime('%Y-%m-%d') if travel_package.start_date else None,
                 'end_date': travel_package.end_date.strftime('%Y-%m-%d') if travel_package.end_date else None,
                 'availability': travel_package.availability,
-                'image_url': travel_package.image_url
+                
             } for travel_package in travel_packages
         ]
 

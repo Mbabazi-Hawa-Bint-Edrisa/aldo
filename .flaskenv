@@ -1,3 +1,12 @@
 FLASK_APP=run.py
 FLASK_ENV=development
+TWILIO_ACCOUNT_SID=your_account_sid
+TWILIO_AUTH_TOKEN=your_auth_token
+TWILIO_PHONE_NUMBER=your_twilio_phone_number
+MAIL_USERNAME=hawambabazi500@gmail.com
+MAIL_PASSWORD=edrisa1234
+
+
+
+
 

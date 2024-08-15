@@ -14,7 +14,7 @@ class TravelPackage(db.Model):
     start_date = db.Column(db.Date)  
     end_date = db.Column(db.Date)  
     availability = db.Column(db.Boolean)
-    image_url = db.Column(db.String(200))
+    
 
     def __repr__(self):
         return f'<TravelPackage {self.package_name}>'

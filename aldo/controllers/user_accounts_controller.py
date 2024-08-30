@@ -1,43 +1,4 @@
-# from flask import Blueprint, jsonify, request
-# from aldo.extensions import db, bcrypt
-# from aldo.models.user_accounts import User
-# from aldo.models.booking import Booking  # Assuming you have a Booking model
-# from aldo.decorators import admin_required
-# from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token, create_refresh_token
 
-# user_bp = Blueprint('user', __name__, url_prefix='/api')
-
-# # User registration route
-# @user_bp.route('/register', methods=['POST'])
-# def register():
-#     try:
-#         data = request.get_json()
-#         username = data.get('username')
-#         email = data.get('email')
-#         contact = data.get('contact')
-#         password = data.get('password')
-
-#         if not username or not email or not contact or not password:
-#             return jsonify({"error": "All fields are required"}), 400
-
-#         if len(password) < 6:
-#             return jsonify({"error": "Your password must have at least 6 characters"}), 400
-
-#         if User.query.filter_by(email=email).first():
-#             return jsonify({"error": "This email is already registered"}), 400
-#         if User.query.filter_by(contact=contact).first():
-#             return jsonify({"error": "This contact is already registered"}), 400
-
-#         password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
-#         new_user = User(username=username, email=email, contact=contact, password_hash=password_hash)
-#         db.session.add(new_user)
-#         db.session.commit()
-
-#         return jsonify({'message': 'User registered successfully'}), 201
-
-#     except Exception as e:
-#         db.session.rollback()
-#         return jsonify({'error': str(e)}), 500
 
 from flask import Blueprint, jsonify, request
 from flask_mail import Message

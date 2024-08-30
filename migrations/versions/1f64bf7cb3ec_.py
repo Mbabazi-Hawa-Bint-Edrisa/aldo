@@ -54,6 +54,14 @@ def upgrade():
     sa.ForeignKeyConstraint(['user_id'], ['users.user_id'], ),
     sa.PrimaryKeyConstraint('booking_id')
     )
+    op.create_table('messages',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('name', sa.String(length=100), nullable=False),
+    sa.Column('email', sa.String(length=120), nullable=False),
+    sa.Column('message', sa.Text(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), server_default=sa.func.current_timestamp(), nullable=True),
+    sa.PrimaryKeyConstraint('id')
+    )
     # ### end Alembic commands ###
 
 

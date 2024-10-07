@@ -3,7 +3,7 @@ from flask_mail import Mail
 from aldo.extensions import db, migrate, jwt, bcrypt
 from aldo.controllers.booking_controller import booking_bp 
 from aldo.controllers.message_controller import message
-from aldo.controllers.t_package_controller import travel_package_bp
+# from aldo.controllers.t_package_controller import travel_package_bp
 from aldo.controllers.user_accounts_controller import user_bp
 from aldo.controllers.dashboard_controller import dashboard_bp
 from flask_cors import CORS
@@ -36,7 +36,7 @@ def create_app():
     # Register blueprints
     app.register_blueprint(booking_bp, url_prefix='/api/v1/booking')
     app.register_blueprint(message, url_prefix='/api/v1/message')
-    app.register_blueprint(travel_package_bp, url_prefix='/api/v1/travel_package')
+    # app.register_blueprint(travel_package_bp, url_prefix='/api/v1/travel_package')
     app.register_blueprint(user_bp, url_prefix='/api')
     app.register_blueprint(dashboard_bp, url_prefix='/api/admin')
 

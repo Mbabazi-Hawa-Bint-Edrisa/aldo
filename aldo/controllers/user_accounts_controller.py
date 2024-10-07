@@ -50,6 +50,71 @@ def register():
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
+# @user_bp.route('/login', methods=['POST'])
+# def login():
+#     try:
+#         data = request.get_json()
+#         email = data.get("email")
+#         password = data.get("password")
+
+#         user = User.query.filter_by(email=email).first()
+#         if not user or not bcrypt.check_password_hash(user.password_hash, password):
+#             return jsonify({'error': 'Invalid email or password'}), 401
+
+#         access_token = create_access_token(identity=str(user.user_id))
+#         refresh_token = create_refresh_token(identity=str(user.user_id))
+
+#         # Fetch user details
+#         user_details = {
+#             'user_id': user.user_id,
+#             'username': user.username,
+#             'email': user.email,
+#             'contact': user.contact,
+#             'is_admin': user.is_admin,
+#             'created_at': user.created_at
+#         }
+
+#         # Fetch bookings associated with the user
+#         bookings = Booking.query.filter_by(user_id=user.user_id).all()
+#         booking_details = [
+#             {
+#                 'booking_id': booking.booking_id,
+#                 'package_id': booking.package_id,
+#                 'booking_date': booking.booking_date,
+#                 'status': booking.status
+#             } for booking in bookings
+#         ]
+
+#         response = {
+#             'message': 'Login successful',
+#             'access_token': access_token,
+#             'refresh_token': refresh_token,
+#             'user': user_details,
+#             'bookings': booking_details
+#         }
+
+#         # If user is an admin, add a message to redirect to admin dashboard
+#         if user.is_admin:
+#             response['redirect'] = 'Admin Dashboard'
+
+#         return jsonify(response), 200
+
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 500
+
+
+# # Refresh token route
+# @user_bp.route('/refresh', methods=["POST"])
+# @jwt_required(refresh=True)
+# def refresh():
+#     try:
+#         current_user_id = get_jwt_identity()
+#         access_token = create_access_token(identity=current_user_id)
+#         return jsonify({'access_token': access_token}), 200
+
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 500
+
 @user_bp.route('/login', methods=['POST'])
 def login():
     try:
@@ -102,18 +167,6 @@ def login():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-
-# Refresh token route
-@user_bp.route('/refresh', methods=["POST"])
-@jwt_required(refresh=True)
-def refresh():
-    try:
-        current_user_id = get_jwt_identity()
-        access_token = create_access_token(identity=current_user_id)
-        return jsonify({'access_token': access_token}), 200
-
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
 
 # Edit user route
 @user_bp.route('/edit/<int:user_id>', methods=["PUT"])

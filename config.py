@@ -14,7 +14,7 @@ import os
 
 class Config:
     # Correctly define the database URI as a class attribute
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///recess_project'
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///project.db'
     
     # Set the secret key and other configurations
     SECRET_KEY = os.getenv('SECRET_KEY', 'safaris')

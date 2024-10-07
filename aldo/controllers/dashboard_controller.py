@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify
 from aldo.extensions import db
 from aldo.models.user_accounts import User
 from aldo.models.booking import Booking
-from aldo.models.travel_packages import TravelPackage
+# from aldo.models.travel_packages import TravelPackage
 from aldo.models.message import Message
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from aldo.decorators import admin_required
@@ -49,29 +49,29 @@ def get_all_bookings():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@dashboard_bp.route('/travel-packages', methods=['GET'])
-@jwt_required()
-@admin_required
-def get_all_travel_packages():
-    try:
-        travel_packages = TravelPackage.query.all()
-        travel_packages_data = [
-            {
-                'package_id': travel_package.package_id,
-                'package_name': travel_package.package_name,
-                'description': travel_package.description,
-                'destinations': json.loads(travel_package.destinations),
-                'activities': json.loads(travel_package.activities),
-                'inclusions': json.loads(travel_package.inclusions),
-                'price': travel_package.price,
-                'start_date': travel_package.start_date.strftime('%Y-%m-%d') if travel_package.start_date else None,
-                'end_date': travel_package.end_date.strftime('%Y-%m-%d') if travel_package.end_date else None,
-                'availability': travel_package.availability,
-                'image_url': travel_package.image_url
-            } for travel_package in travel_packages
-        ]
-        return jsonify(travel_packages_data), 200
-    except Exception as e:
+# @dashboard_bp.route('/travel-packages', methods=['GET'])
+# @jwt_required()
+# @admin_required
+# def get_all_travel_packages():
+#     try:
+#         travel_packages = TravelPackage.query.all()
+#         travel_packages_data = [
+#             {
+#                 'package_id': travel_package.package_id,
+#                 'package_name': travel_package.package_name,
+#                 'description': travel_package.description,
+#                 'destinations': json.loads(travel_package.destinations),
+#                 'activities': json.loads(travel_package.activities),
+#                 'inclusions': json.loads(travel_package.inclusions),
+#                 'price': travel_package.price,
+#                 'start_date': travel_package.start_date.strftime('%Y-%m-%d') if travel_package.start_date else None,
+#                 'end_date': travel_package.end_date.strftime('%Y-%m-%d') if travel_package.end_date else None,
+#                 'availability': travel_package.availability,
+#                 'image_url': travel_package.image_url
+#             } for travel_package in travel_packages
+#         ]
+#         return jsonify(travel_packages_data), 200
+#     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
 @dashboard_bp.route('/messages', methods=['GET'])
